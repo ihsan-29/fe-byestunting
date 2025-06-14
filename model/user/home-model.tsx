@@ -31,8 +31,8 @@ export class HomeModel {
 
       try {
         // Cek apakah backend server berjalan
-        const backendUrl = process.env.BACKEND_URL || "http://127.0.0.1:3001";
-        console.log("Checking backend availability at:", backendUrl);
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://be-byestunting-production.up.railway.app"
+        console.log("Checking backend availability at:", backendUrl)
 
         // Tambahkan timeout untuk fetch
         const controller = new AbortController();
