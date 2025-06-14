@@ -1,21 +1,23 @@
 // Fungsi untuk mengambil data stunting berdasarkan provinsi (6 teratas) dari JSON
 export async function fetchStuntingByProvince() {
   try {
-    // Import data JSON secara langsung
-    const provinceData = await import(
-      "../../../backend/data-presentase-stunting/prevalensi_stunting_Provinsi_indonesia_2024.json"
-    ).catch((err) => {
-      console.error("Error importing province data:", err)
-      return { default: [] }
-    })
+    // Fetch data JSON dari public folder
+    const response = await fetch("/data/prevalensi_stunting_Provinsi_indonesia_2024.json")
 
-    if (!provinceData || !provinceData.default || !Array.isArray(provinceData.default)) {
-      console.error("Invalid province data format:", provinceData)
-      return []
+    if (!response.ok) {
+      console.error("Error fetching province data:", response.status)
+      return getFallbackProvinceData()
     }
 
-    // Urutkan data berdasarkan prevalensi tertinggi dan ambil 5 teratas
-    const sortedData = provinceData.default
+    const provinceData = await response.json()
+
+    if (!provinceData || !Array.isArray(provinceData)) {
+      console.error("Invalid province data format:", provinceData)
+      return getFallbackProvinceData()
+    }
+
+    // Urutkan data berdasarkan prevalensi tertinggi dan ambil 6 teratas
+    const sortedData = provinceData
       .sort((a: any, b: any) => {
         const aValue = a["Prevalensi_Stunting(%)"] || a.percentage || a.prevalence
         const bValue = b["Prevalensi_Stunting(%)"] || b.percentage || b.prevalence
@@ -30,15 +32,20 @@ export async function fetchStuntingByProvince() {
     }))
   } catch (error) {
     console.error("Error fetching stunting data by province:", error)
-    // Fallback data jika JSON tidak bisa dibaca
-    return [
-      { name: "NTT", value: 37.8 },
-      { name: "Sulawesi Barat", value: 34.5 },
-      { name: "Papua", value: 32.8 },
-      { name: "NTB", value: 31.4 },
-      { name: "Kalimantan Barat", value: 30.5 },
-    ]
+    return getFallbackProvinceData()
   }
+}
+
+// Fungsi helper untuk fallback data
+function getFallbackProvinceData() {
+  return [
+    { name: "NTT", value: 37.8 },
+    { name: "Sulawesi Barat", value: 34.5 },
+    { name: "Papua", value: 32.8 },
+    { name: "NTB", value: 31.4 },
+    { name: "Kalimantan Barat", value: 30.5 },
+    { name: "Aceh", value: 29.7 },
+  ]
 }
 
 // Fungsi untuk mengambil artikel edukasi populer
@@ -138,11 +145,16 @@ export async function fetchPopularEducation() {
 // Fungsi tambahan untuk mendapatkan semua data provinsi (untuk keperluan admin/dashboard)
 export async function fetchAllProvinceData() {
   try {
-    const provinceData = await import(
-      "@/model/backend/data-presentase-stunting/prevalensi_stunting_Provinsi_indonesia_2024.json"
-    )
+    const response = await fetch("/data/prevalensi_stunting_Provinsi_indonesia_2024.json")
 
-    return provinceData.default.map((item: any) => ({
+    if (!response.ok) {
+      console.error("Error fetching all province data:", response.status)
+      return []
+    }
+
+    const provinceData = await response.json()
+
+    return provinceData.map((item: any) => ({
       province: item.Provinsi || item.province,
       year: item.Tahun || item.year || 2024,
       percentage: Number.parseFloat((item["Prevalensi_Stunting(%)"] || item.percentage || item.prevalence).toFixed(1)),
@@ -156,11 +168,16 @@ export async function fetchAllProvinceData() {
 // Fungsi tambahan untuk mendapatkan detail data berdasarkan provinsi tertentu
 export async function fetchProvinceDetail(provinceName: string) {
   try {
-    const provinceData = await import(
-      "@/model/backend/data-presentase-stunting/prevalensi_stunting_Provinsi_indonesia_2024.json"
-    )
+    const response = await fetch("/data/prevalensi_stunting_Provinsi_indonesia_2024.json")
 
-    const provinceDetail = provinceData.default.find(
+    if (!response.ok) {
+      console.error("Error fetching province detail:", response.status)
+      return null
+    }
+
+    const provinceData = await response.json()
+
+    const provinceDetail = provinceData.find(
       (item: any) => (item.Provinsi || item.province).toLowerCase() === provinceName.toLowerCase(),
     )
 
