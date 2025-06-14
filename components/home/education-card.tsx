@@ -15,7 +15,7 @@ export default function EducationCard({
   viewCount,
 }: EducationCardProps) {
   return (
-    <Link href={`/edukasi/${slug || id}`}>
+    <Link href={`/edukasi/${id}`}>
       <div className="bg-foreground ">
         <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors bg-white mb-2">
           <div className="mt-1">
