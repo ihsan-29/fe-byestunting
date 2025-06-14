@@ -440,7 +440,7 @@ export class CekStuntingPresenter {
       try {
         await this.saveStuntingRecord(updatedResult, formData, calculatedAge);
         // perubahan Caca: Tampilkan feedback sukses
-        alert("✅ Prediksi berhasil dan data telah tersimpan ke database!");
+        alert("✅ Proses prediksi telah selesai, dan data disimpan dengan aman guna menjaga kerahasiaan serta integritas informasi");
       } catch (saveError) {
         console.error("Error saving to database:", saveError);
         // perubahan Caca: Tampilkan feedback error untuk database
