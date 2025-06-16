@@ -20,6 +20,7 @@ export interface PredictionResult {
   slug?: string;
 }
 
+
 export interface ChildData {
   nama: string;
   namaIbu: string;
